@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spline 3D Demo</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #canvas3d {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+    <!-- Preload the Spline runtime if you want -->
+    <link rel="preload" href="https://unpkg.com/@splinetool/runtime@1.9.82/build/runtime.js" as="script" crossorigin>
+</head>
+<body>
+    <div class="loading" id="loading">Loading Spline scene...</div>
+    <canvas id="canvas3d"></canvas>
+    
+    <script type="module">
+        // Import directly from unpkg CDN - this fixes the module resolution error
+        import { Application } from 'https://unpkg.com/@splinetool/runtime@1.9.82/build/runtime.js';
+        
+        const canvas = document.getElementById('canvas3d');
+        const loadingEl = document.getElementById('loading');
+        
+        // Create a new Spline Application
+        const spline = new Application(canvas);
+        
+        // Load a Spline scene
+        // Replace this URL with your own Spline scene URL from Spline editor
+        spline.load('https://prod.spline.design/ipjatMM68SdaRw9N/scene.splinecode')
+            .then(() => {
+                // Scene loaded successfully
+                loadingEl.style.display = 'none';
+                console.log('Spline scene loaded successfully');
+                
+                // Find objects in your scene (replace with your object names)
+                try {
+                    const obj = spline.findObjectByName('Cube');
+                    if (obj) {
+                        console.log('Found object:', obj.name);
+                    }
+                } catch (err) {
+                    console.warn('Could not find object:', err);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading Spline scene:', error);
+                loadingEl.textContent = 'Error loading Spline scene';
+            });
+    </script>
+</body>
+</html>

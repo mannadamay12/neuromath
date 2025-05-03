@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCI Adaptive Learning Platform</title>
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #888888;
+            --dark-color: #000000;
+            --background-color: #000000;
+            --grid-color: #222222;
+            --text-color: #ffffff;
+            --highlight-color: #ffffff;
+            --accent-color: #666666;
+            --success-color: #00ff00;
+            --warning-color: #ffcc00;
+            --danger-color: #ff3300;
+            --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Ubuntu Mono', 'Roboto Mono', Menlo, Monaco, Consolas, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-sans);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 32px;
+            margin-right: 12px;
+        }
+        
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .connected {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+        
+        .disconnected {
+            background-color: var(--danger-color);
+        }
+        
+        .main-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .video-container {
+            background: var(--dark-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .video-container video {
+            width: 100%;
+            display: block;
+            background-color: #111;
+        }
+        
+        .video-controls {
+            display: flex;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .control-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 8px 16px;
+            margin: 0 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-family: var(--font-mono);
+            letter-spacing: -0.5px;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-color);
+        }
+        
+        .control-btn i {
+            margin-right: 8px;
+        }
+        
+        .stats-panel {
+            background: var(--dark-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 24px;
+            height: 100%;
+        }
+        
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 16px;
+        }
+        
+        .stats-header h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--highlight-color);
+            font-family: var(--font-mono);
+        }
+        
+        .stats-header .refresh-btn {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .cognitive-status {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+        
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            margin-right: 16px;
+            font-size: 18px;
+        }
+        
+        .status-clear {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+        }
+        
+        .status-confused {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+        
+        .status-info h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+        
+        .status-info p {
+            font-size: 13px;
+            color: var(--secondary-color);
+            font-family: var(--font-mono);
+        }
+        
+        .metric {
+            margin-bottom: 24px;
+        }
+        
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .metric-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+        }
+        
+        .metric-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--highlight-color);
+            font-family: var(--font-mono);
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--highlight-color);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .feedback-section {
+            background: var(--dark-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .feedback-section h2 {
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--highlight-color);
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 16px;
+            font-family: var(--font-mono);
+        }
+        
+        .feedback-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: var(--font-mono);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .rating-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .rating-btn {
+            flex: 1;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--secondary-color);
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-family: var(--font-mono);
+            font-size: 13px;
+        }
+        
+        .rating-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--highlight-color);
+        }
+        
+        .rating-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--highlight-color);
+            color: var(--highlight-color);
+        }
+        
+        .submit-btn {
+            grid-column: span 2;
+            background: transparent;
+            color: var(--highlight-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+        }
+        
+        .submit-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--highlight-color);
+        }
+        
+        .session-history {
+            background: var(--dark-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 32px;
+        }
+        
+        .session-history h2 {
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            color: var(--highlight-color);
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 16px;
+            font-family: var(--font-mono);
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+        
+        .history-table th {
+            font-weight: 500;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-mono);
+        }
+        
+        .history-table td {
+            color: var(--text-color);
+            font-family: var(--font-mono);
+        }
+        
+        .history-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .history-table .session-link {
+            color: var(--highlight-color);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: border-color 0.2s;
+            padding-bottom: 2px;
+        }
+        
+        .history-table .session-link:hover {
+            border-color: var(--highlight-color);
+        }
+        
+        /* Time indicator styling - similar to the Vercel report */
+        .time-indicator {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Section identifiers like in your reference */
+        .section-identifier {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-family: var(--font-mono);
+            color: var(--secondary-color);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .section-identifier .number {
+            color: var(--highlight-color);
+        }
+        
+        /* Additional grid styling and overlays */
+        .grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1;
+        }
+        
+        @media (max-width: 992px) {
+            .main-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .feedback-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .submit-btn {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0idXJsKCNncmFkaWVudCkiIGQ9Ik0xMyAzdjdoOFYzaC04ek0zIDB2N2g4VjBoLTh6bTAgMTBoOHY3SDN2LTd6bTEwIDRoOHY3aC04di03eiIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojM2E3YmQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDBkMmZmIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+" alt="Logo">
+                <h1>BCI Adaptive Learning</h1>
+            </div>
+            <div class="connection-status">
+                <div class="status-indicator connected"></div>
+                BCI Connected
+            </div>
+        </header>
+        
+        <div class="main-section">
+            <div class="video-container">
+                <video id="learning-video" poster="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiA5IiBmaWxsPSJub25lIj48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iOSIgZmlsbD0iI2YwZjBmMCI+PC9yZWN0Pjx0ZXh0IHg9IjgiIHk9IjQuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iIGZpbGw9IiM2NjYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEuMiI+VmlkZW8gVmlzdWFsaXphdGlvbjwvdGV4dD48L3N2Zz4=">
+                    <source src="/Users/ad12/Documents/NYU/HCI/project/logarithms.mp4 " type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="video-controls">
+                    <button class="control-btn" id="playPauseBtn">
+                        <i>▶️</i> Play
+                    </button>
+                    <button class="control-btn" id="restartBtn">
+                        <i>🔄</i> Restart
+                    </button>
+                    <button class="control-btn" id="slowDownBtn">
+                        <i>🐢</i> Slow Down
+                    </button>
+                    <button class="control-btn" id="speedUpBtn">
+                        <i>🐇</i> Speed Up
+                    </button>
+                </div>
+            </div>
+            
+            <div class="stats-panel">
+                <div class="stats-header">
+                    <h2>Cognitive Status</h2>
+                    <button class="refresh-btn">⟳</button>
+                </div>
+                
+                <div class="cognitive-status">
+                    <div class="status-icon status-clear">
+                        <i>✓</i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Understanding Clearly</h3>
+                        <p>Current content pace is optimal</p>
+                    </div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-name">Attention Level</span>
+                        <span class="metric-value">85%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-name">Cognitive Load</span>
+                        <span class="metric-value">60%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-name">Confusion Rate</span>
+                        <span class="metric-value">25%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 25%;"></div>
+                    </div>
+                </div>
+                
+                <div class="metric">
+                    <div class="metric-header">
+                        <span class="metric-name">Content Completion</span>
+                        <span class="metric-value">45%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feedback-section">
+            <h2>Session Feedback</h2>
+            <form class="feedback-form">
+                <div class="form-group">
+                    <label for="content-clarity">How clear was the content?</label>
+                    <div class="rating-container">
+                        <div class="rating-btn">1</div>
+                        <div class="rating-btn">2</div>
+                        <div class="rating-btn">3</div>
+                        <div class="rating-btn active">4</div>
+                        <div class="rating-btn">5</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-pace">Was the pace appropriate?</label>
+                    <div class="rating-container">
+                        <div class="rating-btn">Too Slow</div>
+                        <div class="rating-btn active">Just Right</div>
+                        <div class="rating-btn">Too Fast</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="difficulty">Content difficulty level</label>
+                    <select id="difficulty">
+                        <option value="too-easy">Too Easy</option>
+                        <option value="easy">Easy</option>
+                        <option value="appropriate" selected>Appropriate</option>
+                        <option value="challenging">Challenging</option>
+                        <option value="too-difficult">Too Difficult</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="topic">Would you like to suggest a topic?</label>
+                    <input type="text" id="topic" placeholder="Enter topic...">
+                </div>
+                
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="comments">Additional Comments</label>
+                    <textarea id="comments" placeholder="Share your experience..."></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
+        </div>
+        
+        <div class="session-history">
+            <h2>Learning Session History</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Topic</th>
+                        <th>Duration</th>
+                        <th>Confusion Triggers</th>
+                        <th>Replay</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Apr 30, 2025</td>
+                        <td>Neural Networks</td>
+                        <td>12:35</td>
+                        <td>3</td>
+                        <td><a href="#" class="session-link">View</a></td>
+                    </tr>
+                    <tr>
+                        <td>Apr 28, 2025</td>
+                        <td>Linear Algebra</td>
+                        <td>18:42</td>
+                        <td>5</td>
+                        <td><a href="#" class="session-link">View</a></td>
+                    </tr>
+                    <tr>
+                        <td>Apr 25, 2025</td>
+                        <td>Probability Theory</td>
+                        <td>22:10</td>
+                        <td>2</td>
+                        <td><a href="#" class="session-link">View</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Video player controls
+            const video = document.getElementById('learning-video');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const slowDownBtn = document.getElementById('slowDownBtn');
+            const speedUpBtn = document.getElementById('speedUpBtn');
+            
+            playPauseBtn.addEventListener('click', function() {
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.innerHTML = '<i>⏸️</i> Pause';
+                } else {
+                    video.pause();
+                    playPauseBtn.innerHTML = '<i>▶️</i> Play';
+                }
+            });
+            
+            restartBtn.addEventListener('click', function() {
+                video.currentTime = 0;
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.innerHTML = '<i>⏸️</i> Pause';
+                }
+            });
+            
+            slowDownBtn.addEventListener('click', function() {
+                if (video.playbackRate > 0.5) {
+                    video.playbackRate -= 0.25;
+                    updateCognitiveStatus('Understanding Better', 'Content pace adjusted slower');
+                }
+            });
+            
+            speedUpBtn.addEventListener('click', function() {
+                if (video.playbackRate < 2) {
+                    video.playbackRate += 0.25;
+                    if (video.playbackRate > 1.5) {
+                        updateCognitiveStatus('Potential Confusion', 'Content pace may be too fast', true);
+                    }
+                }
+            });
+            
+            // Rating buttons
+            const ratingBtns = document.querySelectorAll('.rating-btn');
+            ratingBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from siblings
+                    this.parentNode.querySelectorAll('.rating-btn').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                });
+            });
+            
+            // BCI Simulation (for demo purposes)
+            function simulateBCI() {
+                // Randomly update metrics for demonstration
+                const metrics = [
+                    { name: 'Attention Level', min: 60, max: 95 },
+                    { name: 'Cognitive Load', min: 30, max: 90 },
+                    { name: 'Confusion Rate', min: 10, max: 60 },
+                    { name: 'Content Completion', min: 0, max: 100, increment: true }
+                ];
+                
+                setInterval(() => {
+                    metrics.forEach(metric => {
+                        const header = document.querySelector(`.metric-name:contains('${metric.name}')`).parentNode;
+                        const valueEl = header.querySelector('.metric-value');
+                        const progressFill = header.nextElementSibling.querySelector('.progress-fill');
+                        
+                        let currentValue = parseInt(valueEl.textContent);
+                        
+                        if (metric.increment) {
+                            // Steadily increment completion
+                            currentValue = Math.min(currentValue + 1, 100);
+                        } else {
+                            // Random fluctuation
+                            const change = Math.floor(Math.random() * 10) - 5;
+                            currentValue = Math.max(metric.min, Math.min(metric.max, currentValue + change));
+                        }
+                        
+                        valueEl.textContent = currentValue + '%';
+                        progressFill.style.width = currentValue + '%';
+                        
+                        // Update cognitive status based on confusion rate
+                        const confusionRate = parseInt(document.querySelector(".metric-name:contains('Confusion Rate')").parentNode.querySelector('.metric-value').textContent);
+                        
+                        if (confusionRate > 40) {
+                            updateCognitiveStatus('Confusion Detected', 'Adjusting content presentation', true);
+                        } else {
+                            updateCognitiveStatus('Understanding Clearly', 'Current content pace is optimal');
+                        }
+                    });
+                }, 5000);
+            }
+            
+            // Helper function to find elements by text content
+            document.querySelectorAll = function(selector) {
+                const result = [];
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(el => {
+                    if (el.textContent.includes(selector.replace(':contains(', '').replace(')', ''))) {
+                        result.push(el);
+                    }
+                });
+                return result;
+            };
+            
+            function updateCognitiveStatus(title, message, confused = false) {
+                const statusEl = document.querySelector('.cognitive-status');
+                const iconEl = statusEl.querySelector('.status-icon');
+                const titleEl = statusEl.querySelector('h3');
+                const messageEl = statusEl.querySelector('p');
+                
+                titleEl.textContent = title;
+                messageEl.textContent = message;
+                
+                if (confused) {
+                    iconEl.className = 'status-icon status-confused';
+                    iconEl.innerHTML = '<i>!</i>';
+                } else {
+                    iconEl.className = 'status-icon status-clear';
+                    iconEl.innerHTML = '<i>✓</i>';
+                }
+            }
+            
+            // Simulate BCI data for demo
+            simulateBCI();
+        });
+    </script>
+</body>
+</html>
