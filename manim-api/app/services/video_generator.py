@@ -100,11 +100,14 @@ def generate_math_video(math_problem, audience_age, language="English", voice_la
     improved_mp4_files = glob.glob(path_pattern)
     
     final_video_path = improved_mp4_files[0] if improved_mp4_files else video_file_path
+
+    base_url = os.getenv("BASE_URL", "http://localhost:8000")
+    relative_path = f"/media/videos/{os.path.basename(os.path.dirname(os.path.dirname(final_video_path)))}/480p15/{os.path.basename(final_video_path)}"
     
     return {
         "video_id": video_id,
         "video_path": final_video_path,
-        "video_url": f"/media/videos/{os.path.basename(os.path.dirname(os.path.dirname(final_video_path)))}/480p15/{os.path.basename(final_video_path)}"
+        "video_url": f"{base_url}{relative_path}"
     }
 
 def extract_frames(video_file_path, output_dir, max_frames=60):

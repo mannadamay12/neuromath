@@ -1,9 +1,0 @@
-fastapi==0.110.0
-uvicorn==0.27.1
-pydantic==2.7.1
-python-dotenv==0.21.1
-google-generativeai==0.5.2
-manim==0.18.1
-manim-voiceover==0.3.6.post1
-opencv-python==4.9.0.80
-azure-cognitiveservices-speech==1.37.0
