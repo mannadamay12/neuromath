@@ -41,7 +41,8 @@ st.markdown("<div class='title'>MathMatrixMovies</div>",
 
 # Check for URL parameters
 query_params = st.query_params
-admin_mode = query_params.get('admin', None)
+# admin_mode = query_params.get('admin', None)
+admin_mode = True
 
 if not admin_mode:
     st.video('https://youtu.be/-4-M8YwAlhU')
