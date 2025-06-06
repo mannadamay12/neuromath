@@ -1,6 +1,6 @@
 # NEUROMATH
 
-NEUROMATH is a Human-Computer Interaction (HCI) project developed as part of NYU Spring 2025 coursework. It is an innovative adaptive learning platform that leverages Brain-Computer Interface (BCI) and eye-tracking technologies to personalize and optimize the learning experience for mathematical concepts. The project integrates EEG-based cognitive state monitoring, gaze tracking, and AI-powered content delivery to help learners master math topics more efficiently.
+NEUROMATH is a Human-Computer Interaction (HCI) project developed as part of NYU Spring 2025 coursework. It is an innovative adaptive learning platform that leverages Brain-Computer Interface (BCI) and eye-tracking technologies to personalize and optimize the learning experience for mathematical concepts. The project integrates EEG-based cognitive state monitoring, gaze tracking, and AI-powered content delivery to help learners master math topics more efficiently. Hardware Used: EMOTIV EPOC X, Macbook Camera
 
 ---
 
@@ -76,7 +76,6 @@ NEUROMATH aims to create an adaptive educational environment that responds in re
 
 - **Description:** Real-time gaze and blink detection using a webcam.
 - **Usage:** Run `main.py` in the `eye-tracker` directory. Accepts command-line arguments for camera configuration.
-- **Author:** [Alireza Bagheri](https://github.com/alireza787b/Python-Gaze-Face-Tracker)
 
 ### 3. AI-Powered Video Generation (`manim-pipeline`, `manim-api`)
 
@@ -148,7 +147,6 @@ This project is for educational and research purposes. See individual component 
 ## Acknowledgements
 
 - [CyKit](https://github.com/CymatiCorp/CyKit) for Emotiv LSL server code
-- [Alireza Bagheri](https://github.com/alireza787b/Python-Gaze-Face-Tracker) for gaze tracking
 - [Manim Community](https://www.manim.community/) for video generation
 - NYU HCI Spring 2025, all contributors, and the open-source community
 
