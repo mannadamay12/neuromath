@@ -41,16 +41,6 @@ Example Packets:
 Parameters:
 You can change parameters such as face width, moving average window, webcam ID, terminal outputs, on-screen data, logging detail, etc., from the code.
 
-Author: Alireza Bagheri
-GitHub: https://github.com/alireza787b/Python-Gaze-Face-Tracker
-Email: p30planets@gmail.com
-LinkedIn: https://www.linkedin.com/in/alireza787b
-Date: November 2023
-
-Inspiration:
-Initially inspired by Asadullah Dal's iris segmentation project (https://github.com/Asadullah-Dal17/iris-Segmentation-mediapipe-python). 
-The blink detection feature is also contributed by Asadullah Dal (GitHub: Asadullah-Dal17).
-
 Usage:
 - Run the script in a Python environment with the necessary dependencies installed. The script accepts command-line arguments for camera source configuration.
 - Press 'c' to recalibrate the head pose estimation to the current orientation.
