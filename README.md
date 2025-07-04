@@ -1,5 +1,8 @@
 # NEUROMATH
 
+[![Demo](https://img.youtube.com/vi/QeDD7WJSFDM/0.jpg)]([https://youtu.be/QeDD7WJSFDM])
+
+
 NEUROMATH is a Human-Computer Interaction (HCI) project developed as part of NYU Spring 2025 coursework. It is an innovative adaptive learning platform that leverages Brain-Computer Interface (BCI) and eye-tracking technologies to personalize and optimize the learning experience for mathematical concepts. The project integrates EEG-based cognitive state monitoring, gaze tracking, and AI-powered content delivery to help learners master math topics more efficiently. Hardware Used: EMOTIV EPOC X, Macbook Camera
 
 ---
